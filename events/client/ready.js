@@ -10,11 +10,4 @@ module.exports = (Discord, client) => {
 		.catch(console.error);
 
 	changeNotifications.createCron(client, Discord);
-	// setInterval(() => {
-	// 	binance_cron.changeCron(client, Discord);
-	// }, 300000);
-
-	// setInterval(() => {
-	// 	binance_cron.currentPriceCron(client, Discord);
-	// }, 3600000);
 };

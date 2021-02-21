@@ -32,20 +32,18 @@ module.exports = {
 					return msg.channel.send(trackingEmbed);
 					break;
 				case 'current':
-					const currentEmbed = new Discord.MessageEmbed().setTitle('WIP');
-					// .setColor('#ffdd55')
-					// .setDescription(
-					// 	'This section shows commands to manage cryptocurrencies and track when these go up or down an specified percentage since last notification'
-					// )
-					// .addFields({
-					// 	name: 'Commands',
-					// 	value: `\`${prefix}track {pair} {percentage}\`
-					//                 \`${prefix}remove {pair}\`
-					//                 \`${prefix}modify {pair} {percentage}\`
-					//                 \`${prefix}set-channel {channel}\`
-					//                 \`${prefix}remove-channel\``,
-					// 	inline: true,
-					// });
+					const currentEmbed = new Discord.MessageEmbed()
+						.setTitle('Current prices')
+						.setColor('#ffdd55')
+						.setDescription(
+							'This section shows commands to manage cryptocurrencies and track current prices'
+						)
+						.addFields({
+							name: 'Commands',
+							value: `\`${prefix}current {pair}\`
+					            \`${prefix}pairs {search}\``,
+							inline: true,
+						});
 
 					return msg.channel.send(currentEmbed);
 					break;
@@ -82,13 +80,10 @@ module.exports = {
 			.setColor('#ffdd55')
 			.addFields(
 				{ name: 'Prefix', value: prefix },
+				{ name: 'Platform', value: 'Binance (WIP more)' },
 				{
 					name: 'Track changes',
 					value: `\`${prefix}help tracking\``,
-					// \`${prefix}remove {pair}\`
-					// \`${prefix}modify {pair} {percentage}\`
-					// \`${prefix}set-channel {channel}\`
-					// \`${prefix}remove-channel\``,
 					inline: true,
 				},
 				{
