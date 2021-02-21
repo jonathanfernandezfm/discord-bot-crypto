@@ -6,7 +6,7 @@ module.exports = {
 	aliases: ['info'],
 	help: 'help',
 	execute: async (msg, args, client, Discord) => {
-		const prefix = (await serverController.getPrefix(msg.channel.guild.id)) || '!';
+		const prefix = (await serverController.getPrefix(msg.channel.guild.id)) || '$';
 
 		const section = args[0];
 

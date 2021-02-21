@@ -5,7 +5,7 @@ module.exports = {
 	description: 'Change bot prefix',
 	help: '!prefix',
 	execute: async (msg, args, client, Discord) => {
-		const prefix = (await serverController.getPrefix(msg.channel.guild.id)) || '!';
+		const prefix = (await serverController.getPrefix(msg.channel.guild.id)) || '$';
 		if (args.length !== 1) return msg.reply(`use correct format ${prefix}prefix {prefix}`);
 
 		const new_prefix = args[0];

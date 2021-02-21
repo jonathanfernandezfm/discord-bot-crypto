@@ -11,7 +11,7 @@ module.exports = {
 	cooldown: 5,
 	help: '!modify {pair} {percentage}',
 	execute: async (msg, args, client, Discord) => {
-		const prefix = (await serverController.getPrefix(msg.channel.guild.id)) || '!';
+		const prefix = (await serverController.getPrefix(msg.channel.guild.id)) || '$';
 		if (args.length !== 2)
 			return msg.reply(`use correct format \`${prefix}modify {pair} {percentage}\``);
 		if (isNaN(args[1]))

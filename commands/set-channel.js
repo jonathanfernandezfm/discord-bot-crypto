@@ -6,7 +6,7 @@ module.exports = {
 	description: 'Set channel for notifications',
 	help: '#set-channel',
 	execute: async (msg, args, client, Discord) => {
-		const prefix = (await serverController.getPrefix(msg.channel.guild.id)) || '!';
+		const prefix = (await serverController.getPrefix(msg.channel.guild.id)) || '$';
 		if (args.length !== 1)
 			return msg.reply(`use correct format \`${prefix}set-channel {channel}\``);
 

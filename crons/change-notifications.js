@@ -104,7 +104,8 @@ const changeNotification = async (client, Discord) => {
 
 module.exports = {
 	createCron: (client, Discord) => {
-		cron.schedule('*/10 * * * * *', () => {
+		// EVERY 5 MINS
+		cron.schedule('*/5 * * * *', () => {
 			console.log('Running change notification');
 			changeNotification(client, Discord);
 		});

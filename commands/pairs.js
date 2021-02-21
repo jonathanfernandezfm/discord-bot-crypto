@@ -9,7 +9,7 @@ module.exports = {
 	cooldown: 5,
 	help: 'pairs {search}',
 	execute: async (msg, args, client, Discord) => {
-		const prefix = (await serverController.getPrefix(msg.channel.guild.id)) || '!';
+		const prefix = (await serverController.getPrefix(msg.channel.guild.id)) || '$';
 		if (!args[0]) return msg.reply(`enter a search \`${prefix}pairs {search}\``);
 		const { data: ticker } = await axios.get(`${API_BINANCE_URL}/api/v3/ticker/price`);
 

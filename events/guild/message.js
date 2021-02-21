@@ -37,7 +37,7 @@ const validPermissions = [
 const cooldowns = new Map();
 
 module.exports = async (Discord, client, message) => {
-	const prefix = (await serverController.getPrefix(message.channel.guild.id)) || '!';
+	const prefix = (await serverController.getPrefix(message.channel.guild.id)) || '$';
 
 	const mention = message.mentions.members.first();
 	if (mention && client.user.id === mention.id)

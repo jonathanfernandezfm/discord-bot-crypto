@@ -17,7 +17,7 @@ module.exports = {
 	cooldown: 5,
 	help: 'current {pair}',
 	execute: async (msg, args, client, Discord) => {
-		const prefix = (await serverController.getPrefix(msg.channel.guild.id)) || '!';
+		const prefix = (await serverController.getPrefix(msg.channel.guild.id)) || '$';
 		if (!args[0]) return msg.reply(`enter a crypto pair \`${prefix}current {pair}\``);
 
 		let pair = args[0].toUpperCase();
