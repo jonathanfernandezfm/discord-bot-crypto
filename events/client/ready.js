@@ -1,4 +1,4 @@
-const binance_cron = require('../../crons/binance');
+const changeNotifications = require('../../crons/change-notifications');
 
 module.exports = (Discord, client) => {
 	console.log('Bot is online!');
@@ -9,11 +9,12 @@ module.exports = (Discord, client) => {
 		})
 		.catch(console.error);
 
-	setInterval(() => {
-		binance_cron.changeCron(client, Discord);
-	}, 300000);
+	changeNotifications.createCron(client, Discord);
+	// setInterval(() => {
+	// 	binance_cron.changeCron(client, Discord);
+	// }, 300000);
 
-	setInterval(() => {
-		binance_cron.currentPriceCron(client, Discord);
-	}, 3600000);
+	// setInterval(() => {
+	// 	binance_cron.currentPriceCron(client, Discord);
+	// }, 3600000);
 };

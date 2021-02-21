@@ -1,3 +1,5 @@
+const serverController = require('../../controller/server');
+
 const validPermissions = [
 	'CREATE_INSTANT_INVITE',
 	'KICK_MEMBERS',
@@ -35,7 +37,7 @@ const validPermissions = [
 const cooldowns = new Map();
 
 module.exports = async (Discord, client, message) => {
-	const prefix = '!';
+	const prefix = (await serverController.getPrefix(message.channel.guild.id)) || '!';
 
 	if (!message.content.startsWith(prefix) || message.author.bot) return;
 
