@@ -39,6 +39,10 @@ const cooldowns = new Map();
 module.exports = async (Discord, client, message) => {
 	const prefix = (await serverController.getPrefix(message.channel.guild.id)) || '!';
 
+	const mention = message.mentions.members.first();
+	if (mention && client.user.id === mention.id)
+		return client.commands.get('help').execute(message, [], client, Discord);
+
 	if (!message.content.startsWith(prefix) || message.author.bot) return;
 
 	const args = message.content.slice(prefix.length).split(/ +/);
