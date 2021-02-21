@@ -8,7 +8,7 @@ const API_BINANCE_URL = 'https://api.binance.com';
 module.exports = {
 	name: 'track',
 	description: 'Add a coin pair for tracking',
-	cooldown: 5,
+	permissions: ['ADMINISTRATOR'],
 	help: '!track {pair} {percentage}',
 	execute: async (msg, args, client, Discord) => {
 		const prefix = (await serverController.getPrefix(msg.channel.guild.id)) || '$';

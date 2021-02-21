@@ -2,7 +2,8 @@ module.exports = {
 	name: 'clear',
 	description: 'Clear messages',
 	cooldown: 5,
-	help: '!clear {number}',
+	permissions: ['ADMINISTRATOR'],
+	help: 'clear {number}',
 	execute: async (msg, args, client, Discord) => {
 		if (!args[0]) return msg.reply('enter an amount of messages');
 		if (isNaN(args[0])) return msg.reply('enter a real number');

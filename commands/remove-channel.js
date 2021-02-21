@@ -3,7 +3,8 @@ const channelsController = require('../controller/guilds');
 module.exports = {
 	name: 'remove-channel',
 	description: 'Removes channel for notifications',
-	help: '#remove-channel',
+	permissions: ['ADMINISTRATOR'],
+	help: 'remove-channel',
 	execute: async (msg, args, client, Discord) => {
 		await channelsController.removeNotificationChannel(msg.channel.guild.id);
 

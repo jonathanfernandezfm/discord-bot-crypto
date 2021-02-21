@@ -3,7 +3,8 @@ const serverController = require('../controller/server');
 module.exports = {
 	name: 'prefix',
 	description: 'Change bot prefix',
-	help: '!prefix',
+	permissions: ['ADMINISTRATOR'],
+	help: 'prefix',
 	execute: async (msg, args, client, Discord) => {
 		const prefix = (await serverController.getPrefix(msg.channel.guild.id)) || '$';
 		if (args.length !== 1) return msg.reply(`use correct format ${prefix}prefix {prefix}`);

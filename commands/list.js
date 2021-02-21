@@ -6,7 +6,7 @@ module.exports = {
 	name: 'list',
 	description: 'List pair being tracked',
 	cooldown: 5,
-	help: '#list',
+	help: 'list',
 	execute: async (msg, args, client, Discord) => {
 		const prefix = (await serverController.getPrefix(msg.channel.guild.id)) || '$';
 		const channel = await channelController.getChannel(msg.channel.guild.id);

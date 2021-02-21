@@ -1,6 +1,6 @@
 const db = require('megadb');
 let serverdb = new db.crearDB({
-	nombre: 'server',
+	nombre: 'guilds',
 	carpeta: '../database',
 });
 

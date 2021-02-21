@@ -9,7 +9,8 @@ module.exports = {
 	name: 'modify',
 	description: 'Modify a coin pair percentage',
 	cooldown: 5,
-	help: '!modify {pair} {percentage}',
+	permissions: ['ADMINISTRATOR'],
+	help: 'modify {pair} {percentage}',
 	execute: async (msg, args, client, Discord) => {
 		const prefix = (await serverController.getPrefix(msg.channel.guild.id)) || '$';
 		if (args.length !== 2)

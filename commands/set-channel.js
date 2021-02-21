@@ -4,7 +4,8 @@ const serverController = require('../controller/server');
 module.exports = {
 	name: 'set-channel',
 	description: 'Set channel for notifications',
-	help: '#set-channel',
+	permissions: ['ADMINISTRATOR'],
+	help: 'set-channel',
 	execute: async (msg, args, client, Discord) => {
 		const prefix = (await serverController.getPrefix(msg.channel.guild.id)) || '$';
 		if (args.length !== 1)

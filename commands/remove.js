@@ -5,8 +5,8 @@ const serverController = require('../controller/server');
 module.exports = {
 	name: 'remove',
 	description: 'Remove a coin pair that is being tracked',
-	cooldown: 5,
-	help: '#remove {pair}',
+	permissions: ['ADMINISTRATOR'],
+	help: 'remove {pair}',
 	execute: async (msg, args, client, Discord) => {
 		const prefix = (await serverController.getPrefix(msg.channel.guild.id)) || '$';
 		if (args.length !== 1) return msg.reply(`use correct format \`${prefix}remove {pair}\``);
