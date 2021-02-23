@@ -1,12 +1,10 @@
-# Discord BOT crypto
+# Crypto Alerts
 
 ![Discord Logo](https://cdn.worldvectorlogo.com/logos/discord-logo-1.svg)
 
-🤖 This is a Discord bot for crypto notifications. Sends notification when crypto currencies are down a percentage defined and every hour
+📈 Welcome to Crypto Alerts, an advanced crypto related bot with alerts of price fluctuation, current prices, lot of configurations and more.
 
-Tracks Binance and Coinbase api
-
-➕ More commands are being added constantly.
+💻 It uses multiple trading platforms (default: Binance)
 
 ## Installation
 
