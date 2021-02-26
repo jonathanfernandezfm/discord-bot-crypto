@@ -3,12 +3,9 @@ const cron = require('node-cron');
 const cryptoController = require('../controller/coins');
 const pricesController = require('../controller/prices');
 const guildsController = require('../controller/guilds');
+const { getPlusMinusSymbol, fixedPrice } = require('../utils/utils');
 
 const API_BINANCE_URL = 'https://api.binance.com';
-
-const getPlusMinusSymbol = (value) => {
-	return value < 0 ? '' : '+';
-};
 
 const getColor = (value) => {
 	return value < 0 ? '#ff4444' : '#88ff88';
@@ -16,10 +13,6 @@ const getColor = (value) => {
 
 const getTitle = (value, symbol) => {
 	return value < 0 ? `📉📉 ${symbol} change ❗` : `📈📈 ${symbol} change ❕`;
-};
-
-const fixedPrice = (value) => {
-	return parseFloat(value).toFixed(2);
 };
 
 const changeNotification = async (client, Discord) => {
@@ -38,8 +31,7 @@ const changeNotification = async (client, Discord) => {
 				const { data: ticker } = await axios.get(`${API_BINANCE_URL}/api/v3/ticker/price`);
 				const { symbol, price } = ticker.filter((t) => t.symbol === pair)[0];
 				let last_price = await pricesController.getPrice(guild_id, pair);
-				if (!last_price)
-					last_price = await pricesController.setPrice(guild_id, pair, price);
+				if (!last_price) last_price = await pricesController.setPrice(guild_id, pair, price);
 
 				const perc_change_last_price = ((price - last_price) / last_price) * 100;
 				const money_change_last_price = price - last_price;
@@ -52,6 +44,9 @@ const changeNotification = async (client, Discord) => {
 						.setAuthor(
 							`${getTitle(perc_change_last_price, symbol)}`,
 							'https://d31dn7nfpuwjnm.cloudfront.net/images/valoraciones/0028/4238/imagen-bitcoin.png?1508147409'
+						)
+						.setThumbnail(
+							'https://public.bnbstatic.com/image/cms/blog/20190405/eb2349c3-b2f8-4a93-a286-8f86a62ea9d8.png'
 						)
 						.addFields(
 							{ name: 'Coin', value: `${symbol}`, inline: true },
@@ -84,12 +79,9 @@ const changeNotification = async (client, Discord) => {
 							},
 							{
 								name: '% Change',
-								value: `${getPlusMinusSymbol(
-									perc_change_last_price
-								)}${perc_change_last_price}%`,
+								value: `${getPlusMinusSymbol(perc_change_last_price)}${perc_change_last_price}%`,
 								inline: true,
-							},
-							{ name: 'Platform', value: `Binance` }
+							}
 						)
 						.setTimestamp();
 

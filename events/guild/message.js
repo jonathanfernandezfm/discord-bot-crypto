@@ -1,4 +1,4 @@
-const serverController = require('../../controller/server');
+const guildsController = require('../../controller/guilds');
 
 const validPermissions = [
 	'CREATE_INSTANT_INVITE',
@@ -37,11 +37,15 @@ const validPermissions = [
 const cooldowns = new Map();
 
 module.exports = async (Discord, client, message) => {
-	const prefix = (await serverController.getPrefix(message.channel.guild.id)) || '$';
+	const prefix = (await guildsController.getPrefix(message.channel.guild.id)) || '$';
+
+	//////////// MENTION BOT HELP ////////////
 
 	const mention = message.mentions.members.first();
 	if (mention && client.user.id === mention.id)
 		return client.commands.get('help').execute(message, [], client, Discord);
+
+	//////////// PREFIX ////////////
 
 	if (!message.content.startsWith(prefix) || message.author.bot) return;
 
@@ -49,10 +53,13 @@ module.exports = async (Discord, client, message) => {
 	const cmd = args.shift().toLowerCase();
 
 	const command =
-		client.commands.get(cmd) ||
-		client.commands.find((command) => command.aliases && command.aliases.includes(cmd));
+		client.commands.get(cmd) || client.commands.find((command) => command.aliases && command.aliases.includes(cmd));
 
 	if (!command) return;
+
+	//////////// WIP ////////////
+
+	if (command.wip) return message.reply('this command is still WIP. Coming soon');
 
 	//////////// PERMISSIONS ////////////
 
@@ -83,9 +90,7 @@ module.exports = async (Discord, client, message) => {
 		if (currentTime < expirationTime) {
 			const timeLeft = (expirationTime - currentTime) / 1000;
 
-			return message.reply(
-				`Wait ${timeLeft.toFixed(1)} seconds before using command \`${command.name}\` again`
-			);
+			return message.reply(`Wait ${timeLeft.toFixed(1)} seconds before using command \`${command.name}\` again`);
 		}
 	}
 

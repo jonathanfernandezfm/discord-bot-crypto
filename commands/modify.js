@@ -1,7 +1,6 @@
 const { default: axios } = require('axios');
 const cryptoController = require('../controller/coins');
-const channelController = require('../controller/guilds');
-const serverController = require('../controller/server');
+const guildsController = require('../controller/guilds');
 
 const API_BINANCE_URL = 'https://api.binance.com';
 
@@ -12,19 +11,13 @@ module.exports = {
 	permissions: ['ADMINISTRATOR'],
 	help: 'modify {pair} {percentage}',
 	execute: async (msg, args, client, Discord) => {
-		const prefix = (await serverController.getPrefix(msg.channel.guild.id)) || '$';
-		if (args.length !== 2)
-			return msg.reply(`use correct format \`${prefix}modify {pair} {percentage}\``);
+		const prefix = (await guildsController.getPrefix(msg.channel.guild.id)) || '$';
+		if (args.length !== 2) return msg.reply(`use correct format \`${prefix}modify {pair} {percentage}\``);
 		if (isNaN(args[1]))
-			return msg.reply(
-				`enter a real number as percentage \`${prefix}modify {pair} {percentage}\``
-			);
+			return msg.reply(`enter a real number as percentage \`${prefix}modify {pair} {percentage}\``);
 
-		const channel = await channelController.getChannel(msg.channel.guild.id);
-		if (!channel)
-			return msg.reply(
-				`configure a notification channel first \`${prefix}set-channel {channel}\``
-			);
+		const channel = await guildsController.getChannel(msg.channel.guild.id);
+		if (!channel) return msg.reply(`configure a notification channel first \`${prefix}set-channel {channel}\``);
 
 		const pair = args[0].toUpperCase();
 		const percentage = args[1];

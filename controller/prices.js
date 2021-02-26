@@ -30,6 +30,7 @@ module.exports = {
 			else return null;
 		} else return null;
 	},
+
 	getPrices: async (id) => {
 		let prices = await cryptodb.obtener(`${id}.prices`);
 

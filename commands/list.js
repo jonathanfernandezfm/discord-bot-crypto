@@ -1,6 +1,5 @@
 const cryptoController = require('../controller/coins');
-const channelController = require('../controller/guilds');
-const serverController = require('../controller/server');
+const guildsController = require('../controller/guilds');
 
 module.exports = {
 	name: 'list',
@@ -8,12 +7,9 @@ module.exports = {
 	cooldown: 5,
 	help: 'list',
 	execute: async (msg, args, client, Discord) => {
-		const prefix = (await serverController.getPrefix(msg.channel.guild.id)) || '$';
-		const channel = await channelController.getChannel(msg.channel.guild.id);
-		if (!channel)
-			return msg.reply(
-				`configure a notification channel first \`${prefix}set-channel {channel}\``
-			);
+		const prefix = (await guildsController.getPrefix(msg.channel.guild.id)) || '$';
+		const channel = await guildsController.getChannel(msg.channel.guild.id);
+		if (!channel) return msg.reply(`configure a notification channel first \`${prefix}set-channel {channel}\``);
 
 		// LIST PAIR FROM DATABASE
 		try {

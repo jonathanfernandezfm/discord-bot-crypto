@@ -5,32 +5,32 @@ let cryptodb = new db.crearDB({
 });
 
 module.exports = {
-	addCoin: async (id, pair, percentage) => {
+	addCoin: async (id, pair, percentage, interval) => {
 		let pairs = await cryptodb.obtener(`${id}.pairs`);
 
 		if (pairs) {
 			const exists = pairs.filter((p) => p.pair === pair);
-			if (!exists.length) pairs.push({ pair: pair, percentage: percentage });
-			else
-				throw Error(
-					`pair already being tracked \`${exists[0].pair} ${exists[0].percentage}%\``
-				);
+			if (!exists.length) pairs.push({ pair: pair, percentage: percentage, interval: interval });
+			else throw Error(`pair already being tracked \`${exists[0].pair} ${exists[0].percentage}%\``);
 		} else {
-			pairs = [{ pair: pair, percentage: percentage }];
+			pairs = [{ pair: pair, percentage: percentage, interval: interval }];
 		}
 
 		const res = await cryptodb.establecer(`${id}.pairs`, pairs);
 		return res;
 	},
 
-	editCoin: async (id, pair, percentage) => {
+	editCoin: async (id, pair, percentage, interval) => {
 		let pairs = await cryptodb.obtener(`${id}.pairs`);
 
 		if (pairs && pairs.length) {
 			const exists = pairs.filter((p) => p.pair === pair);
 			if (exists.length) {
 				pairs.forEach((p) => {
-					if (p.pair === pair) p.percentage = percentage;
+					if (p.pair === pair) {
+						p.percentage = percentage;
+						p.interval = interval;
+					}
 				});
 			} else {
 				throw Error(`pair is not being tracked. Use \`#track\` to add it`);
