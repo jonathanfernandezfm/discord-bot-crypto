@@ -5,27 +5,27 @@ let cryptodb = new db.crearDB({
 });
 
 module.exports = {
-	setPrice: async (id, pair, price) => {
+	setPrice: async (id, trade_in, trade_out, price) => {
 		let prices = await cryptodb.obtener(`${id}.prices`);
 
 		if (prices && prices.length) {
-			const exists = prices.filter((p) => p.pair === pair);
+			const exists = prices.filter((p) => p.trade_in === trade_in && p.trade_out === trade_out);
 			if (exists.length) {
 				prices.forEach((p) => {
-					if (p.pair === pair) p.price = price;
+					if (p.trade_in === trade_in && p.trade_out === trade_out) p.price = price;
 				});
-			} else prices.push({ pair: pair, price: price });
-		} else prices = [{ pair: pair, price: price }];
+			} else prices.push({ trade_in: trade_in, trade_out: trade_out, price: price });
+		} else prices = [{ trade_in: trade_in, trade_out: trade_out, price: price }];
 
 		const res = await cryptodb.establecer(`${id}.prices`, prices);
 		return price;
 	},
 
-	getPrice: async (id, pair) => {
+	getPrice: async (id, trade_in, trade_out) => {
 		let prices = await cryptodb.obtener(`${id}.prices`);
 
 		if (prices && prices.length) {
-			const exists = prices.find((p) => p.pair === pair);
+			const exists = prices.find((p) => p.trade_in === trade_in && p.trade_out === trade_out);
 			if (exists) return exists.price;
 			else return null;
 		} else return null;

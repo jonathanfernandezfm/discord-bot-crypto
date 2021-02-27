@@ -17,9 +17,9 @@ module.exports = {
 			let pairs_string = '';
 			let percetage_string = '';
 
-			if (pairs) {
+			if (pairs && pairs.length !== 0) {
 				pairs.forEach((p) => {
-					pairs_string += `${p.pair}\n`;
+					pairs_string += `${p.trade_in}${p.trade_out}\n`;
 					percetage_string += `${p.percentage}%\n`;
 				});
 

@@ -5,29 +5,33 @@ let cryptodb = new db.crearDB({
 });
 
 module.exports = {
-	addCoin: async (id, pair, percentage, interval) => {
+	addCoin: async (id, trade_in, trade_out, percentage, interval) => {
 		let pairs = await cryptodb.obtener(`${id}.pairs`);
 
 		if (pairs) {
-			const exists = pairs.filter((p) => p.pair === pair);
-			if (!exists.length) pairs.push({ pair: pair, percentage: percentage, interval: interval });
-			else throw Error(`pair already being tracked \`${exists[0].pair} ${exists[0].percentage}%\``);
+			const exists = pairs.filter((p) => p.trade_in === trade_in && p.trade_out === trade_out);
+			if (!exists.length)
+				pairs.push({ trade_in: trade_in, trade_out: trade_out, percentage: percentage, interval: interval });
+			else
+				throw Error(
+					`pair already being tracked \`${exists[0].trade_in}${exists[0].trade_out} ${exists[0].percentage}%\``
+				);
 		} else {
-			pairs = [{ pair: pair, percentage: percentage, interval: interval }];
+			pairs = [{ trade_in: trade_in, trade_out: trade_out, percentage: percentage, interval: interval }];
 		}
 
 		const res = await cryptodb.establecer(`${id}.pairs`, pairs);
 		return res;
 	},
 
-	editCoin: async (id, pair, percentage, interval) => {
+	editCoin: async (id, trade_in, trade_out, percentage, interval) => {
 		let pairs = await cryptodb.obtener(`${id}.pairs`);
 
 		if (pairs && pairs.length) {
-			const exists = pairs.filter((p) => p.pair === pair);
+			const exists = pairs.filter((p) => p.trade_in === trade_in && p.trade_out === trade_out);
 			if (exists.length) {
 				pairs.forEach((p) => {
-					if (p.pair === pair) {
+					if (p.trade_in === trade_in && p.trade_out === trade_out) {
 						p.percentage = percentage;
 						p.interval = interval;
 					}
@@ -41,13 +45,13 @@ module.exports = {
 		return res;
 	},
 
-	removeCoin: async (id, pair) => {
+	removeCoin: async (id, trade_in, trade_out) => {
 		let pairs = await cryptodb.obtener(`${id}.pairs`);
 
 		if (pairs && pairs.length) {
-			const exists = pairs.filter((p) => p.pair === pair);
+			const exists = pairs.filter((p) => p.trade_in === trade_in && p.trade_out === trade_out);
 			if (exists.length) {
-				pairs = pairs.filter((p) => p.pair !== pair);
+				pairs = pairs.filter((p) => p.trade_in !== trade_in && p.trade_out !== trade_out);
 			} else {
 				throw Error(`pair is not being tracked`);
 			}

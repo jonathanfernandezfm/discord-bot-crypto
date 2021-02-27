@@ -9,18 +9,23 @@ module.exports = {
 	description: 'Modify a coin pair percentage',
 	cooldown: 5,
 	permissions: ['ADMINISTRATOR'],
-	help: 'modify {pair} {percentage}',
+	help: 'modify {trade_in} {trade_out} {percentage}',
 	execute: async (msg, args, client, Discord) => {
 		const prefix = (await guildsController.getPrefix(msg.channel.guild.id)) || '$';
-		if (args.length !== 2) return msg.reply(`use correct format \`${prefix}modify {pair} {percentage}\``);
-		if (isNaN(args[1]))
-			return msg.reply(`enter a real number as percentage \`${prefix}modify {pair} {percentage}\``);
+		if (args.length !== 3)
+			return msg.reply(`use correct format \`${prefix}modify {trade_in} {trade_out} {percentage}\``);
+		if (isNaN(args[2]))
+			return msg.reply(
+				`enter a real number as percentage \`${prefix}modify {trade_in} {trade_out} {percentage}\``
+			);
 
 		const channel = await guildsController.getChannel(msg.channel.guild.id);
 		if (!channel) return msg.reply(`configure a notification channel first \`${prefix}set-channel {channel}\``);
 
-		const pair = args[0].toUpperCase();
-		const percentage = args[1];
+		const trade_in = args[0].toUpperCase();
+		const trade_out = args[1].toUpperCase();
+		const pair = `${trade_in}${trade_out}`;
+		const percentage = args[2];
 
 		// CHECK IF PAIR EXISTS
 		try {
@@ -33,7 +38,7 @@ module.exports = {
 
 		// MODIFY PAIR IN DATABASE
 		try {
-			await cryptoController.editCoin(msg.channel.guild.id, pair, percentage);
+			await cryptoController.editCoin(msg.channel.guild.id, trade_in, trade_out, percentage);
 
 			const embed = new Discord.MessageEmbed()
 				.setTitle(':coin: Succesfully modified pair')

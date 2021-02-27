@@ -3,16 +3,39 @@ const cron = require('node-cron');
 const cryptoController = require('../controller/coins');
 const pricesController = require('../controller/prices');
 const guildsController = require('../controller/guilds');
-const { getPlusMinusSymbol, fixedPrice } = require('../utils/utils');
+const { getPlusMinusSymbol, fixedPrice, capitalize } = require('../utils/utils');
 
 const API_BINANCE_URL = 'https://api.binance.com';
 
-const getColor = (value) => {
-	return value < 0 ? '#ff4444' : '#88ff88';
+const formatting = {
+	down: {
+		color: '#ff4444',
+		image:
+			'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b7/Eo_circle_red_arrow-down.svg/30px-Eo_circle_red_arrow-down.svg.png',
+	},
+
+	up: {
+		color: '#66ff66',
+		image:
+			'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c0/Eo_circle_green_arrow-up.svg/30px-Eo_circle_green_arrow-up.svg.png',
+	},
 };
 
-const getTitle = (value, symbol) => {
-	return value < 0 ? `📉📉 ${symbol} change ❗` : `📈📈 ${symbol} change ❕`;
+const platforms = {
+	binance: {
+		image: 'https://public.bnbstatic.com/image/cms/blog/20200707/631c823b-886e-4e46-b12f-29e5fdc0882e.png',
+	},
+};
+
+const getSymbolImage = async (symbol) => {
+	try {
+		const coin = symbol.slice(0, 3).toLowerCase();
+		await axios.get(`https://cryptoicons.org/api/color/${coin}/50`);
+		return `https://cryptoicons.org/api/color/${coin}/50`;
+	} catch (err) {
+		if (err.message.includes('404'))
+			return 'https://images.vexels.com/media/users/3/152864/isolated/preview/2e095de08301a57890aad6898ad8ba4c-yellow-circle-question-mark-icon-by-vexels.png';
+	}
 };
 
 const changeNotification = async (client, Discord) => {
@@ -22,32 +45,32 @@ const changeNotification = async (client, Discord) => {
 		guilds.forEach(async (guild_id) => {
 			const guild = client.guilds.cache.get(guild_id);
 			const channel_id = await guildsController.getChannel(guild_id);
+			const platform = await guildsController.getDefaultPlatform(guild_id);
 			if (!channel_id) return;
 			const channel = guild.channels.cache.get(channel_id);
 			const pairs = await cryptoController.listCoins(guild_id);
 			if (!pairs) return;
 
-			pairs.forEach(async ({ pair, percentage }) => {
+			pairs.forEach(async ({ trade_in, trade_out, percentage }) => {
 				const { data: ticker } = await axios.get(`${API_BINANCE_URL}/api/v3/ticker/price`);
+				const pair = `${trade_in}${trade_out}`;
 				const { symbol, price } = ticker.filter((t) => t.symbol === pair)[0];
-				let last_price = await pricesController.getPrice(guild_id, pair);
-				if (!last_price) last_price = await pricesController.setPrice(guild_id, pair, price);
+				let last_price = await pricesController.getPrice(guild_id, trade_in, trade_out);
+				if (!last_price) last_price = await pricesController.setPrice(guild_id, trade_in, trade_out, price);
 
-				const perc_change_last_price = ((price - last_price) / last_price) * 100;
+				const perc_change = ((price - last_price) / last_price) * 100;
 				const money_change_last_price = price - last_price;
 
-				if (Math.abs(perc_change_last_price) > percentage) {
-					pricesController.setPrice(guild_id, pair, price);
+				if (Math.abs(perc_change) > percentage) {
+					pricesController.setPrice(guild_id, trade_in, trade_out, price);
 
 					const changePriceEmbed = new Discord.MessageEmbed()
-						.setColor(`${getColor(perc_change_last_price)}`)
+						.setColor(`${perc_change < 0 ? formatting.down.color : formatting.up.color}`)
 						.setAuthor(
-							`${getTitle(perc_change_last_price, symbol)}`,
-							'https://d31dn7nfpuwjnm.cloudfront.net/images/valoraciones/0028/4238/imagen-bitcoin.png?1508147409'
+							`${symbol}`,
+							`${await getSymbolImage(symbol)}` //perc_change < 0 ? formatting.down.image : formatting.up.image
 						)
-						.setThumbnail(
-							'https://public.bnbstatic.com/image/cms/blog/20190405/eb2349c3-b2f8-4a93-a286-8f86a62ea9d8.png'
-						)
+						.setThumbnail(perc_change < 0 ? formatting.down.image : formatting.up.image)
 						.addFields(
 							{ name: 'Coin', value: `${symbol}`, inline: true },
 							{
@@ -57,7 +80,7 @@ const changeNotification = async (client, Discord) => {
 							},
 							{
 								name: 'Current price',
-								value: `${fixedPrice(price)}€`,
+								value: `${fixedPrice(price)}`,
 								inline: true,
 							},
 							{
@@ -74,16 +97,17 @@ const changeNotification = async (client, Discord) => {
 							},
 							{
 								name: 'Last price',
-								value: `${fixedPrice(last_price)}€`,
+								value: `${fixedPrice(last_price)}`,
 								inline: true,
 							},
 							{
 								name: '% Change',
-								value: `${getPlusMinusSymbol(perc_change_last_price)}${perc_change_last_price}%`,
+								value: `${getPlusMinusSymbol(perc_change)}${perc_change}%`,
 								inline: true,
 							}
 						)
-						.setTimestamp();
+						.setTimestamp()
+						.setFooter(capitalize(platform), platforms.binance.image);
 
 					channel.send(changePriceEmbed);
 				}
@@ -97,8 +121,7 @@ const changeNotification = async (client, Discord) => {
 module.exports = {
 	createCron: (client, Discord) => {
 		// EVERY 5 MINS
-		cron.schedule('*/5 * * * *', () => {
-			console.log('Running change notification');
+		cron.schedule('*/5 * * * * *', () => {
 			changeNotification(client, Discord);
 		});
 	},

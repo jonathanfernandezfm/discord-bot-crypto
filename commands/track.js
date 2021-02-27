@@ -8,32 +8,37 @@ module.exports = {
 	name: 'track',
 	description: 'Add a coin pair for tracking',
 	permissions: ['ADMINISTRATOR'],
-	help: '!track {pair} {percentage} [time_interval]',
+	help: '!track {trade_in} {trade_out} {percentage} [time_interval]',
 	execute: async (msg, args, client, Discord) => {
 		const prefix = (await guildsController.getPrefix(msg.channel.guild.id)) || '$';
 		const premium = await guildsController.getPremium(msg.channel.guild.id);
 		const pair_trackeds = await cryptoController.listCoins(msg.channel.guild.id);
 
 		if (!premium) {
-			if (pair_trackeds.length === 3)
+			if (pair_trackeds && pair_trackeds.length === 3)
 				return msg.reply(`you are tracking 3 coins already. Check \`${prefix}premium\` benefits.`);
-			if (args.length !== 2) return msg.reply(`use correct format \`${prefix}track {pair} {percentage}\``);
+			if (args.length !== 3)
+				return msg.reply(`use correct format \`${prefix}track {trade_in} {trade_out} {percentage}\``);
 		} else {
-			if (args.length < 2 || args.length > 3)
-				return msg.reply(`use correct format \`${prefix}track {pair} {percentage} [time_interval]\``);
-
-			if (isNaN(args[1]) || (args[2] && isNaN(args[2])))
+			if (args.length < 3 || args.length > 4)
 				return msg.reply(
-					`enter a real number in numeric parameters \`${prefix}track {pair} {percentage} [time_interval]\``
+					`use correct format \`${prefix}track {trade_in} {trade_out} {percentage} [time_interval]\``
+				);
+
+			if (isNaN(args[2]) || (args[3] && isNaN(args[3])))
+				return msg.reply(
+					`enter a real number in numeric parameters \`${prefix}track {trade_in} {trade_out} {percentage} [time_interval]\``
 				);
 		}
 
 		const channel = await guildsController.getChannel(msg.channel.guild.id);
 		if (!channel) return msg.reply(`configure a notification channel first \`${prefix}set-channel {channel}\``);
 
-		const pair = args[0].toUpperCase();
-		const percentage = args[1];
-		const interval = args[2] || 5;
+		const trade_in = args[0].toUpperCase();
+		const trade_out = args[1].toUpperCase();
+		const pair = `${trade_in}${trade_out}`;
+		const percentage = args[2];
+		const interval = args[3] || 5;
 
 		// CHECK IF PAIR EXISTS
 		try {
@@ -46,7 +51,7 @@ module.exports = {
 
 		// ADD PAIR TO DATABASE
 		try {
-			await cryptoController.addCoin(msg.channel.guild.id, pair, percentage, interval);
+			await cryptoController.addCoin(msg.channel.guild.id, trade_in, trade_out, percentage, interval);
 
 			const embed = new Discord.MessageEmbed()
 				.setTitle(':coin: Tracking pair')
