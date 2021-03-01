@@ -33,8 +33,7 @@ const getSymbolImage = async (symbol) => {
 		await axios.get(`https://cryptoicons.org/api/color/${coin}/50`);
 		return `https://cryptoicons.org/api/color/${coin}/50`;
 	} catch (err) {
-		if (err.message.includes('404'))
-			return 'https://images.vexels.com/media/users/3/152864/isolated/preview/2e095de08301a57890aad6898ad8ba4c-yellow-circle-question-mark-icon-by-vexels.png';
+		return 'https://images.vexels.com/media/users/3/152864/isolated/preview/2e095de08301a57890aad6898ad8ba4c-yellow-circle-question-mark-icon-by-vexels.png';
 	}
 };
 
@@ -121,7 +120,7 @@ const changeNotification = async (client, Discord) => {
 module.exports = {
 	createCron: (client, Discord) => {
 		// EVERY 5 MINS
-		cron.schedule('*/5 * * * * *', () => {
+		cron.schedule('*/5 * * * *', () => {
 			changeNotification(client, Discord);
 		});
 	},
