@@ -8,12 +8,15 @@ module.exports = {
 	name: 'current',
 	description: 'Shows current crypto currency price',
 	cooldown: 5,
-	help: 'current {pair}',
+	help: 'current {trade_in} {trade_out}',
 	execute: async (msg, args, client, Discord) => {
 		const prefix = (await guildsController.getPrefix(msg.channel.guild.id)) || '$';
-		if (!args[0]) return msg.reply(`enter a crypto pair \`${prefix}current {pair}\``);
+		if (!args[0]) return msg.reply(`enter a crypto pair \`${prefix}current {trade_in} {trade_out}\``);
 
-		let pair = args[0].toUpperCase();
+		const trade_in = args[0].toUpperCase();
+		const trade_out = args[1].toUpperCase();
+		const pair = `${trade_in}${trade_out}`;
+
 		if (pair.length < 4) pair += 'BTC';
 
 		try {

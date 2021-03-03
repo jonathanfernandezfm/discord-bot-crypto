@@ -24,9 +24,9 @@ module.exports = {
 						)
 						.addFields({
 							name: 'Commands',
-							value: `\`${prefix}track {pair} {percentage}\`
-                                        \`${prefix}remove {pair}\`
-                                        \`${prefix}modify {pair} {percentage}\`
+							value: `\`${prefix}track {trade_in} {trade_out} {percentage}\`
+                                        \`${prefix}remove {trade_in} {trade_out}\`
+                                        \`${prefix}modify {trade_in} {trade_out} {percentage}\`
                                         \`${prefix}set-channel {channel}\`
                                         \`${prefix}remove-channel\``,
 							inline: true,
@@ -42,7 +42,7 @@ module.exports = {
 						)
 						.addFields({
 							name: 'Commands',
-							value: `\`${prefix}current {pair}\`
+							value: `\`${prefix}current {trade_in} {trade_out}\`
 					            \`${prefix}pairs {search}\``,
 							inline: true,
 						});

@@ -1,5 +1,3 @@
-const changeNotifications = require('../../crons/change-notifications');
-
 module.exports = (Discord, client) => {
 	console.log('Bot is online!');
 
@@ -8,6 +6,4 @@ module.exports = (Discord, client) => {
 			type: 'PLAYING',
 		})
 		.catch(console.error);
-
-	changeNotifications.createCron(client, Discord);
 };

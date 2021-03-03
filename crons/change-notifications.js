@@ -37,91 +37,87 @@ const getSymbolImage = async (symbol) => {
 	}
 };
 
-const changeNotification = async (client, Discord) => {
-	const guilds = await guildsController.getGuilds();
-
-	try {
-		guilds.forEach(async (guild_id) => {
-			const guild = client.guilds.cache.get(guild_id);
-			const channel_id = await guildsController.getChannel(guild_id);
-			const platform = await guildsController.getDefaultPlatform(guild_id);
-			if (!channel_id) return;
-			const channel = guild.channels.cache.get(channel_id);
-			const pairs = await cryptoController.listCoins(guild_id);
-			if (!pairs) return;
-
-			pairs.forEach(async ({ trade_in, trade_out, percentage }) => {
-				const { data: ticker } = await axios.get(`${API_BINANCE_URL}/api/v3/ticker/price`);
-				const pair = `${trade_in}${trade_out}`;
-				const { symbol, price } = ticker.filter((t) => t.symbol === pair)[0];
-				let last_price = await pricesController.getPrice(guild_id, trade_in, trade_out);
-				if (!last_price) last_price = await pricesController.setPrice(guild_id, trade_in, trade_out, price);
-
-				const perc_change = ((price - last_price) / last_price) * 100;
-				const money_change_last_price = price - last_price;
-
-				if (Math.abs(perc_change) > percentage) {
-					pricesController.setPrice(guild_id, trade_in, trade_out, price);
-
-					const changePriceEmbed = new Discord.MessageEmbed()
-						.setColor(`${perc_change < 0 ? formatting.down.color : formatting.up.color}`)
-						.setAuthor(
-							`${symbol}`,
-							`${await getSymbolImage(symbol)}` //perc_change < 0 ? formatting.down.image : formatting.up.image
-						)
-						.setThumbnail(perc_change < 0 ? formatting.down.image : formatting.up.image)
-						.addFields(
-							{ name: 'Coin', value: `${symbol}`, inline: true },
-							{
-								name: '\u200B',
-								value: '\u200B',
-								inline: true,
-							},
-							{
-								name: 'Current price',
-								value: `${fixedPrice(price)}`,
-								inline: true,
-							},
-							{
-								name: 'Money change',
-								value: `${getPlusMinusSymbol(money_change_last_price)}${fixedPrice(
-									money_change_last_price
-								)}€`,
-								inline: true,
-							},
-							{
-								name: '\u200B',
-								value: '\u200B',
-								inline: true,
-							},
-							{
-								name: 'Last price',
-								value: `${fixedPrice(last_price)}`,
-								inline: true,
-							},
-							{
-								name: '% Change',
-								value: `${getPlusMinusSymbol(perc_change)}${perc_change}%`,
-								inline: true,
-							}
-						)
-						.setTimestamp()
-						.setFooter(capitalize(platform), platforms.binance.image);
-
-					channel.send(changePriceEmbed);
-				}
-			});
-		});
-	} catch (err) {
-		console.log(err.message);
-	}
-};
-
 module.exports = {
-	createCron: (client, Discord) => {
-		// EVERY 5 MINS
-		cron.schedule('*/5 * * * *', () => {
-			changeNotification(client, Discord);
-		});
+	name: 'tracking-changes',
+	description: 'Send change notifications of tracked crypto pairs',
+	cron: '*/5 * * * *',
+	execute: async (client, Discord) => {
+		const guilds = await guildsController.getGuilds();
+
+		try {
+			guilds.forEach(async (guild_id) => {
+				const guild = client.guilds.cache.get(guild_id);
+				const channel_id = await guildsController.getChannel(guild_id);
+				const platform = await guildsController.getDefaultPlatform(guild_id);
+				if (!channel_id) return;
+				const channel = guild.channels.cache.get(channel_id);
+				const pairs = await cryptoController.listCoins(guild_id);
+				if (!pairs) return;
+
+				pairs.forEach(async ({ trade_in, trade_out, percentage }) => {
+					const { data: ticker } = await axios.get(`${API_BINANCE_URL}/api/v3/ticker/price`);
+					const pair = `${trade_in}${trade_out}`;
+					const { symbol, price } = ticker.filter((t) => t.symbol === pair)[0];
+					let last_price = await pricesController.getPrice(guild_id, trade_in, trade_out);
+					if (!last_price) last_price = await pricesController.setPrice(guild_id, trade_in, trade_out, price);
+
+					const perc_change = ((price - last_price) / last_price) * 100;
+					const money_change_last_price = price - last_price;
+
+					if (Math.abs(perc_change) > percentage) {
+						pricesController.setPrice(guild_id, trade_in, trade_out, price);
+
+						const changePriceEmbed = new Discord.MessageEmbed()
+							.setColor(`${perc_change < 0 ? formatting.down.color : formatting.up.color}`)
+							.setAuthor(
+								`${symbol}`,
+								`${await getSymbolImage(symbol)}` //perc_change < 0 ? formatting.down.image : formatting.up.image
+							)
+							.setThumbnail(perc_change < 0 ? formatting.down.image : formatting.up.image)
+							.addFields(
+								{ name: 'Coin', value: `${symbol}`, inline: true },
+								{
+									name: '\u200B',
+									value: '\u200B',
+									inline: true,
+								},
+								{
+									name: 'Current price',
+									value: `${fixedPrice(price)}`,
+									inline: true,
+								},
+								{
+									name: 'Money change',
+									value: `${getPlusMinusSymbol(money_change_last_price)}${fixedPrice(
+										money_change_last_price
+									)}€`,
+									inline: true,
+								},
+								{
+									name: '\u200B',
+									value: '\u200B',
+									inline: true,
+								},
+								{
+									name: 'Last price',
+									value: `${fixedPrice(last_price)}`,
+									inline: true,
+								},
+								{
+									name: '% Change',
+									value: `${getPlusMinusSymbol(perc_change)}${perc_change}%`,
+									inline: true,
+								}
+							)
+							.setTimestamp()
+							.setFooter(capitalize(platform), platforms.binance.image);
+
+						channel.send(changePriceEmbed);
+					}
+				});
+			});
+		} catch (err) {
+			console.log(err.message);
+		}
 	},
 };
