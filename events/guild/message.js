@@ -37,7 +37,7 @@ const validPermissions = [
 const cooldowns = new Map();
 
 module.exports = async (Discord, client, message) => {
-	const prefix = (await guildsController.getPrefix(message.channel.guild.id)) || '$';
+	const prefix = await guildsController.getPrefix(message.channel.guild.id);
 
 	//////////// MENTION BOT HELP ////////////
 

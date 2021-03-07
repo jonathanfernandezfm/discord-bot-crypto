@@ -5,7 +5,7 @@ const platforms = ['binance', 'coinbase'];
 module.exports = {
 	name: 'platform',
 	description: 'Changes platform for server',
-	premissions: ['ADMINISTRATOR'],
+	permissions: ['ADMINISTRATOR'],
 	wip: true,
 	help: 'platform {platform}',
 	execute: async (msg, args, client, Discord) => {

@@ -10,7 +10,7 @@ module.exports = {
 	permissions: ['ADMINISTRATOR'],
 	help: '!track {trade_in} {trade_out} {percentage} [time_interval]',
 	execute: async (msg, args, client, Discord) => {
-		const prefix = (await guildsController.getPrefix(msg.channel.guild.id)) || '$';
+		const prefix = await guildsController.getPrefix(msg.channel.guild.id);
 		const premium = await guildsController.getPremium(msg.channel.guild.id);
 		const pair_trackeds = await cryptoController.listCoins(msg.channel.guild.id);
 

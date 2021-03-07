@@ -11,7 +11,7 @@ module.exports = {
 	permissions: ['ADMINISTRATOR'],
 	help: 'modify {trade_in} {trade_out} {percentage}',
 	execute: async (msg, args, client, Discord) => {
-		const prefix = (await guildsController.getPrefix(msg.channel.guild.id)) || '$';
+		const prefix = await guildsController.getPrefix(msg.channel.guild.id);
 		if (args.length !== 3)
 			return msg.reply(`use correct format \`${prefix}modify {trade_in} {trade_out} {percentage}\``);
 		if (isNaN(args[2]))

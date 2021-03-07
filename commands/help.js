@@ -7,7 +7,7 @@ module.exports = {
 	aliases: ['info', 'server'],
 	help: 'help',
 	execute: async (msg, args, client, Discord) => {
-		const prefix = (await guildsController.getPrefix(msg.channel.guild.id)) || '$';
+		const prefix = await guildsController.getPrefix(msg.channel.guild.id);
 		const premium = await guildsController.getPremium(msg.channel.guild.id);
 		const platform = await guildsController.getDefaultPlatform(msg.channel.guild.id);
 

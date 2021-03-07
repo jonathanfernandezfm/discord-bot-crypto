@@ -7,7 +7,7 @@ module.exports = {
 	permissions: ['ADMINISTRATOR'],
 	help: 'remove {trade_in} {trade_out}',
 	execute: async (msg, args, client, Discord) => {
-		const prefix = (await guildsController.getPrefix(msg.channel.guild.id)) || '$';
+		const prefix = await guildsController.getPrefix(msg.channel.guild.id);
 		if (args.length !== 2) return msg.reply(`use correct format \`${prefix}remove {trade_in} {trade_out}\``);
 
 		const channel = await guildsController.getChannel(msg.channel.guild.id);

@@ -1,7 +1,7 @@
 module.exports = {
 	name: 'platforms',
 	description: 'List available platforms',
-	premissions: ['ADMINISTRATOR'],
+	permissions: ['ADMINISTRATOR'],
 	help: 'platforms',
 	execute: async (msg, args, client, Discord) => {
 		const embed = new Discord.MessageEmbed()

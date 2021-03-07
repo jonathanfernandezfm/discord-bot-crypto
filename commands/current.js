@@ -10,7 +10,7 @@ module.exports = {
 	cooldown: 5,
 	help: 'current {trade_in} {trade_out}',
 	execute: async (msg, args, client, Discord) => {
-		const prefix = (await guildsController.getPrefix(msg.channel.guild.id)) || '$';
+		const prefix = await guildsController.getPrefix(msg.channel.guild.id);
 		if (!args[0]) return msg.reply(`enter a crypto pair \`${prefix}current {trade_in} {trade_out}\``);
 
 		const trade_in = args[0].toUpperCase();

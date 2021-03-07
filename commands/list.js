@@ -7,7 +7,7 @@ module.exports = {
 	cooldown: 5,
 	help: 'list',
 	execute: async (msg, args, client, Discord) => {
-		const prefix = (await guildsController.getPrefix(msg.channel.guild.id)) || '$';
+		const prefix = await guildsController.getPrefix(msg.channel.guild.id);
 		const channel = await guildsController.getChannel(msg.channel.guild.id);
 		if (!channel) return msg.reply(`configure a notification channel first \`${prefix}set-channel {channel}\``);
 

@@ -6,7 +6,7 @@ module.exports = {
 	permissions: ['ADMINISTRATOR'],
 	help: 'prefix',
 	execute: async (msg, args, client, Discord) => {
-		const prefix = (await guildsController.getPrefix(msg.channel.guild.id)) || '$';
+		const prefix = await guildsController.getPrefix(msg.channel.guild.id);
 		if (args.length !== 1) return msg.reply(`use correct format ${prefix}prefix {prefix}`);
 
 		const new_prefix = args[0];

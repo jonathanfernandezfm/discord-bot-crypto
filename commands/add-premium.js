@@ -3,7 +3,7 @@ const guildsController = require('../controller/guilds');
 module.exports = {
 	name: 'add-premium',
 	description: 'Add premium to a server',
-	premissions: ['ADMINISTRATOR'],
+	permissions: ['ADMINISTRATOR'],
 	help: 'add-premium {server}',
 	execute: async (msg, args, client, Discord) => {
 		const prefix = await guildsController.getPrefix(msg.channel.guild.id);
@@ -17,7 +17,7 @@ module.exports = {
 			throw err;
 		}
 
-		const embed = new Discord.MessageEmbed().setColor('#fc0394').setTitle('🌟 Premium server added');
+		const embed = new Discord.MessageEmbed().setColor('#32a4a8').setTitle('💼 Wallet added');
 
 		msg.channel.send(embed);
 	},

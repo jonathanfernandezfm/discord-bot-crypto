@@ -57,6 +57,21 @@ module.exports = {
 		return res;
 	},
 
+	addEthermineChannel: async (id, channel) => {
+		const res = await guildsdb.establecer(`${id}.ethermineChannel`, channel);
+		return res;
+	},
+
+	removeEthermineChannel: async (id) => {
+		const res = await guildsdb.eliminar(`${id}.ethermineChannel`);
+		return res;
+	},
+
+	getEthermineChannel: async (id) => {
+		const res = await guildsdb.obtener(`${id}.ethermineChannel`);
+		return res;
+	},
+
 	getGuilds: async () => {
 		const res = await guildsdb.keys();
 		return res;

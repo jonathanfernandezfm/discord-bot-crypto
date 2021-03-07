@@ -1,5 +1,4 @@
 const { default: axios } = require('axios');
-const cron = require('node-cron');
 const cryptoController = require('../controller/coins');
 const pricesController = require('../controller/prices');
 const guildsController = require('../controller/guilds');
@@ -49,10 +48,10 @@ module.exports = {
 				const guild = client.guilds.cache.get(guild_id);
 				const channel_id = await guildsController.getChannel(guild_id);
 				const platform = await guildsController.getDefaultPlatform(guild_id);
-				if (!channel_id) return;
-				const channel = guild.channels.cache.get(channel_id);
 				const pairs = await cryptoController.listCoins(guild_id);
-				if (!pairs) return;
+				if (!guild || !channel_id || !pairs) return;
+
+				const channel = guild.channels.cache.get(channel_id);
 
 				pairs.forEach(async ({ trade_in, trade_out, percentage }) => {
 					const { data: ticker } = await axios.get(`${API_BINANCE_URL}/api/v3/ticker/price`);
